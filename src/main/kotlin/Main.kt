@@ -44,11 +44,16 @@ fun sum(value1:List<Int>, value2:List<Int>):String{
         //Sum the two values and any other value that could have been carried over, in the previous operation
         //i.e., if previous round had 9 + 9 then 1 is the value in the carry variable
         val sum = firstValue + secondValue + carried
-        //Add the sum to the result list
+        //Get the last digit from the summed value and add it to the result digit list
         result.add(0,sum %10)
+        //Get the whole number from the summed value and set it as the carried over figure to be used in calculating the
+        // value for the next column, in the succeeding iteration
         carried = sum / 10
     }
+    //Once the loop is done and there is a value that was carried over in the last iteration, add it to the result
+    // digit list as the last column to the left
     if(carried > 0) result.add(0,carried)
-    //Convert the int list to readable string of the sum output
+    //Convert the digit list to a readable string of the sum output
     return result.joinToString("")
 }
+//sus
