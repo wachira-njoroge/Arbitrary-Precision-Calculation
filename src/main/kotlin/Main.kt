@@ -1,31 +1,28 @@
 package org.example
 fun main(){
-    val result = calculate("789","10",Operation.ADDITION)
+    println("Enter the first value:")
+    val input1 = readLine()?.trim() ?: return println("Invalid Input")
+    println("Enter the second value:")
+    val input2 = readLine()?.trim() ?: return println("Invalid Input")
+    println("Enter the operation e.g., sum, subtract, divide")
+    val op = readLine()?.trim() ?: return println("Invalid Input")
+    val result = calculate(input1, input2, op)
     println("Result is :: $result")
 }
-//The enum class below is used to map the possible calculation options
- enum class Operation(op:String){
-     MULTIPLY("multiply"),
-     ADDITION("addition"),
-     DIVIDE("division"),
-     SUBTRACTION("substration")
- }
 /*
 * The function below is intended for arbitrary precision calculation. It takes in the inputs to calculate and emits a
 * result. Using inputs of type string, to cater for values that are larger than the ordinary limit for the Int
 * datatype.
 * */
-fun calculate(input1:String, input2:String, operation:Operation):String {
+fun calculate(input1:String, input2:String, operation:String):String {
     //Convert the input strings into working values
     val num1 = input1.map { it.digitToInt() }
     val num2 = input2.map { it.digitToInt() }
     //
     return when(operation){
-        Operation.MULTIPLY -> TODO()
-        Operation.ADDITION -> sum(num1, num2)
-
-        Operation.DIVIDE -> TODO()
-        Operation.SUBTRACTION -> TODO()
+        "sum" -> sum(num1, num2)
+        "divide" -> TODO()
+        else -> "Invalid operation"
     }
 }
 fun sum(value1:List<Int>, value2:List<Int>):String{
@@ -56,4 +53,17 @@ fun sum(value1:List<Int>, value2:List<Int>):String{
     //Convert the digit list to a readable string of the sum output
     return result.joinToString("")
 }
-//sus
+//subtraction
+fun subtraction(value1: List<Int>, value2:List<Int>):String{
+    val result = mutableListOf<Int>()
+    //Get the largest value of the inputs provided to set the working value
+    val maxlength = maxOf(value1.size, value2.size)
+    //
+    for (i in 0 until maxlength){
+        val valueOne = if (i < value1.size ) value1[value1.size -1 -i] else 0
+        val valueTwo = if (i < value2.size ) value2[value2.size -1 -i] else 0
+        //
+        val difference = valueOne - valueTwo
+    }
+    return result.joinToString("")
+}
