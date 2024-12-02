@@ -1,13 +1,33 @@
 package org.example
 fun main(){
-    println("Enter the first value:")
-    val input1 = readLine()?.trim() ?: return println("Invalid Input")
-    println("Enter the second value:")
-    val input2 = readLine()?.trim() ?: return println("Invalid Input")
-    println("Enter the operation e.g., sum, subtract, divide")
-    val op = readLine()?.trim() ?: return println("Invalid Input")
-    val result = calculate(input1, input2, op)
-    println("Result is :: $result")
+    println("Welcome to the Arbitrary Precision Calculator\n")
+    while(true){
+        println("Enter the first value or type 'exit' to Quit")
+        val value1 = readLine()?.trim()
+        if (value1.equals("exit", ignoreCase = true)) {
+            println("Goodbye!")
+            break
+        }
+        //
+        println("Enter the second value or type 'exit' to Quit")
+        val value2 = readLine()?.trim()
+        if (value2.equals("exit", ignoreCase = true)){
+            println("Goodbye!")
+            break
+        }
+        println("Enter the arithmetic operation: e.g., sum, divide, multiply, subtract or 'exit' to Quit")
+        val operation = readLine()?.trim()
+        if (operation.equals("exit", ignoreCase = true)){
+            println("Goodbye!")
+            break
+        }
+        if (operation != "sum" && operation != "divide" && operation != "subtract"){
+            throw IllegalArgumentException("Invalid operation provided")
+        }
+        val result = calculate(value1!!, value2!!, operation)
+        println("Result is :-> $result")
+    }
+
 }
 /*
 * The function below is intended for arbitrary precision calculation. It takes in the inputs to calculate and emits a
@@ -21,7 +41,8 @@ fun calculate(input1:String, input2:String, operation:String):String {
     //
     return when(operation){
         "sum" -> sum(num1, num2)
-        "divide" -> TODO()
+        "subtract" -> subtraction(num1, num2)
+        //"divide" -> divide(num1, num2)
         else -> "Invalid operation"
     }
 }
@@ -53,17 +74,40 @@ fun sum(value1:List<Int>, value2:List<Int>):String{
     //Convert the digit list to a readable string of the sum output
     return result.joinToString("")
 }
-//subtraction
 fun subtraction(value1: List<Int>, value2:List<Int>):String{
     val result = mutableListOf<Int>()
     //Get the largest value of the inputs provided to set the working value
     val maxlength = maxOf(value1.size, value2.size)
     //
+    var borrow = 0
+    //check which of the two inputs is larger, to determine the subtraction order and perform the calculation in
+    // reverse and append ("-") on the result if need be
+    val negativeResult = value1.size < value2.size || value1.size == value2.size && value1[0] < value2[0]
+    //
+    val largerValue = if(negativeResult) value2 else value1
+    val smallerValue = if(negativeResult) value1 else value2
+    //
     for (i in 0 until maxlength){
-        val valueOne = if (i < value1.size ) value1[value1.size -1 -i] else 0
-        val valueTwo = if (i < value2.size ) value2[value2.size -1 -i] else 0
-        //
-        val difference = valueOne - valueTwo
+        val valueOne = if (i < largerValue.size ) largerValue[largerValue.size -1 -i] else 0
+        val valueTwo = if (i < smallerValue.size ) smallerValue[smallerValue.size -1 -i] else 0
+
+        var difference = valueOne - valueTwo - borrow
+        //If the difference is negative, borrow from the next digit to the right
+        if(difference < 0){
+            difference += 10
+            borrow = 1
+        }
+        result.add(0, difference)
     }
-    return result.joinToString("")
+    //Using digit list to perform the subtraction results in leading zeros that should be cleaned from result
+    while (result.size > 1 && result[0] ==0){
+        result.removeAt(0)
+    }
+    return if(negativeResult) "-${result.joinToString("")}" else result.joinToString("")
 }
+//fun divide(value1: List<Int>, value2: List<Int>):String{
+//
+//}
+//fun multiply(value1: List<Int>, value2: List<Int>):String{
+//
+//}
