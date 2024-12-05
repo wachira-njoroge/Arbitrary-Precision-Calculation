@@ -3,20 +3,20 @@ fun main(){
     println("Welcome to the Arbitrary Precision Calculator\n")
     while(true){
         println("Enter the first value or type 'exit' to Quit")
-        val value1 = readLine()?.trim()
+        val value1 = validateInput()
         if (value1.equals("exit", ignoreCase = true)) {
             println("Goodbye!")
             break
         }
-        validateInput(value1.toString())
+
         //
         println("Enter the second value or type 'exit' to Quit")
-        val value2 = readLine()?.trim()
+        val value2 = validateInput()
         if (value2.equals("exit", ignoreCase = true)){
             println("Goodbye!")
             break
         }
-        validateInput(value2.toString())
+
         //
         println("Enter the arithmetic operation: e.g., sum, divide, multiply, subtract or 'exit' to Quit")
         val operation = readLine()?.trim()
@@ -185,6 +185,11 @@ fun multiply(value1: List<Int>, value2: List<Int>): String {
     //Return the result digits as a string
     return result.joinToString("")
 }
-fun validateInput(input:String){
-    if (input.isEmpty()) throw Exception("Provide a valid input to proceed. Please retry!")
+fun validateInput():String{
+    while (true){
+        val input = readLine()?.trim()
+        //return the input if it was provided otherwise return a message to prompt user to retry
+        input?.takeUnless { it.isBlank()  }?.let { return it }
+        println(" Please provide an input to proceed!")
+    }
 }
