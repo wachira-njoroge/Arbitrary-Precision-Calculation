@@ -8,7 +8,6 @@ fun main(){
             println("Goodbye!")
             break
         }
-
         //
         println("Enter the second value or type 'exit' to Quit")
         val value2 = validateInput()
@@ -16,7 +15,6 @@ fun main(){
             println("Goodbye!")
             break
         }
-
         //
         println("Enter the arithmetic operation: e.g., sum, divide, multiply, subtract or 'exit' to Quit")
         val operation = readLine()?.trim()
