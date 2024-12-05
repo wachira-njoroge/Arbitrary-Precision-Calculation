@@ -8,6 +8,7 @@ fun main(){
             println("Goodbye!")
             break
         }
+        validateInput(value1.toString())
         //
         println("Enter the second value or type 'exit' to Quit")
         val value2 = readLine()?.trim()
@@ -15,14 +16,16 @@ fun main(){
             println("Goodbye!")
             break
         }
+        validateInput(value2.toString())
+        //
         println("Enter the arithmetic operation: e.g., sum, divide, multiply, subtract or 'exit' to Quit")
         val operation = readLine()?.trim()
         if (operation.equals("exit", ignoreCase = true)){
             println("Goodbye!")
             break
         }
-        if (operation != "sum" && operation != "divide" && operation != "subtract"){
-            throw IllegalArgumentException("Invalid operation provided")
+        if (operation != "sum" && operation != "divide" && operation != "subtract" && operation != "multiply"){
+            throw Exception("Invalid Arithmetic Operation provided")
         }
         val result = calculate(value1!!, value2!!, operation)
         println("Result is :-> $result")
@@ -42,7 +45,8 @@ fun calculate(input1:String, input2:String, operation:String):String {
     return when(operation){
         "sum" -> sum(num1, num2)
         "subtract" -> subtraction(num1, num2)
-        //"divide" -> divide(num1, num2)
+        "divide" -> divide(num1, num2)
+        "multiply" -> multiply(num1, num2)
         else -> "Invalid operation"
     }
 }
@@ -81,7 +85,8 @@ fun subtraction(value1: List<Int>, value2:List<Int>):String{
     //
     var borrow = 0
     //check which of the two inputs is larger, to determine the subtraction order and perform the calculation in
-    // reverse and append ("-") on the result if need be
+    // reverse i.e (value2 -value1 where the first input is lesser than the second), and append ("-") on the result,
+    // to negate
     val negativeResult = value1.size < value2.size || value1.size == value2.size && value1[0] < value2[0]
     //
     val largerValue = if(negativeResult) value2 else value1
@@ -99,15 +104,87 @@ fun subtraction(value1: List<Int>, value2:List<Int>):String{
         }
         result.add(0, difference)
     }
-    //Using digit list to perform the subtraction results in leading zeros that should be cleaned from result
+    //Remove the leading zeros brought about by manual operation, from result
     while (result.size > 1 && result[0] ==0){
         result.removeAt(0)
     }
+    //Add ("-") to Negate the result if the first input was lesser than the second.
     return if(negativeResult) "-${result.joinToString("")}" else result.joinToString("")
 }
-//fun divide(value1: List<Int>, value2: List<Int>):String{
-//
-//}
-//fun multiply(value1: List<Int>, value2: List<Int>):String{
-//
-//}
+fun divide(value1: List<Int>, value2: List<Int>):String {
+    //Any number divided by zero is zero let's start with that
+    if (value1 == listOf(0) || value2 == listOf(0)) return "0"
+    //In simulating manual division, a remainder variable is required
+    var remainder = 0
+    //Set the result as a list of the output digits containing the quotient
+    val result = mutableListOf<Int>()
+    //Set the decimal result part In the event the division operation yields decimal values. It's a character list to
+    // cater for the "." in e.g., 3.25
+    var decimalResult = mutableListOf<Char>()
+    //Set the value to divide by
+    val divisor = value2.joinToString("").toInt()
+    //Set the value to divide from
+    val valueTodivide = value1.joinToString("").toInt()
+    //Set division result
+    var quotient = valueTodivide/divisor
+    //Add the quotient to the results digit list
+    result.add(0, quotient)
+    //Compute the decimal part, for division values with a remainder
+    remainder = valueTodivide % divisor
+    if (remainder > 0) {
+        // Add the decimal point to the result
+        decimalResult.add('.')
+
+        // Compute division for decimal places limited to 10 since we multiply the remainder by 10 in manual division,
+        // so as to proceed with the division of the decimal part
+        for (i in 0 until 10) {
+            remainder *= 10
+            val decimalPart = remainder / divisor
+            decimalResult.add(decimalPart.toString()[0])
+            remainder %= divisor
+
+            // Complete division operation if the remainder becomes zero
+            if (remainder == 0) break
+        }
+
+
+    }
+    // Combine the quotient and decimal part into string
+    return result.joinToString("") + decimalResult.joinToString("")
+}
+fun multiply(value1: List<Int>, value2: List<Int>): String {
+    // Any multiple of zero is zero
+    if (value1 == listOf(0) || value2 == listOf(0)) return "0"
+    //Initialize the result and set its max value as the sum of the inputs' length
+    val result = MutableList(value1.size + value2.size){0}
+    for (i in value1.indices) {
+        //Get the last digit of the first input, to ensure the operation start from right to left
+        val firstValue = value1[value1.size - 1 - i]
+        var carry = 0
+        for (j in value2.indices) {
+            //Get the last digit of the second input,
+            val secondValue = value2[value2.size - 1 - j]
+            val position = value1.size + value2.size - 1 - (i + j)
+
+            // Calculate the product and update the result with the carried value
+            val product = firstValue * secondValue + result[position] + carry
+            result[position] = product % 10
+            carry = product / 10
+        }
+
+        // Add any remaining carry to the next position
+        if (carry > 0) {
+            val carryPosition = result.size - 1 - (i + value2.size)
+            result[carryPosition] += carry
+        }
+    }
+    // Remove leading zeros that are in the result digits, brought about by manual arithmetic operation
+    while (result.size > 1 && result[0] == 0) {
+        result.removeAt(0)
+    }
+    //Return the result digits as a string
+    return result.joinToString("")
+}
+fun validateInput(input:String){
+    if (input.isEmpty()) throw Exception("Provide a valid input to proceed. Please retry!")
+}
