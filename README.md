@@ -12,5 +12,5 @@ To run and test out the arbitrary precision calculator, follow these steps:
 2. **Clone this repository**  
    
 3. **Run the Main function**
-    The repl will prompt you to input the values you wish to calculate as well as the arithmetic operation of your choice
-    Happy mathematics
+   The repl will prompt you to input the values you wish to calculate as well as the arithmetic operation of your choice
+   Happy mathematics
