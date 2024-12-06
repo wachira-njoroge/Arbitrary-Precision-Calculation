@@ -1,6 +1,6 @@
 # Arithmetic Precison Calculator
 ## This repo contains code written in Kotlin which runs arithmetic operations that don't rely on external libraries 
-#Setup
+# Setup
 ## To run and test out the arbitrary precision calculator, you need to:
 . Download intellij IDE
 . Clone this repo
